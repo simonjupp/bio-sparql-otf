@@ -20,6 +20,7 @@ require 'benchmark'
 # require 'elasticsearch'
 require 'json'
 require 'rdf/ntriples'
+require 'rdf/nquads'
 require 'sparql/client'
 require 'lib/otf'
 require 'sinatra/cross_origin'
@@ -87,9 +88,10 @@ get "/sparql" do
         end
       end
     end
+    File.open("/tmp/vcf.nq", "w") {|f| f << repository.dump(:nquads)}
     cross_origin
-    content_type :json
-    SPARQL.execute(query, repository).to_json
+    content_type :xml
+    SPARQL.execute(query, repository).to_xml
   else
     settings.sparql_options.merge!(:prefixes => {
       :ssd => "http://www.w3.org/ns/sparql-service-description#",
@@ -128,6 +130,7 @@ post "/query" do
       end
     end
 
+    File.open("/tmp/vcf.nq", "w") {|f| f << repository.dump(:nquads)}
 
     SPARQL.execute(query, repository)
   else
