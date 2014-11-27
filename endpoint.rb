@@ -63,7 +63,7 @@ end
 
 get "/sparql" do
   if params["query"]
-    query = params["query"].to_s.match(/^http:/) ? RDF::Util::File.open_file(params["query"]) : ::URI.decode(params["query"].to_s)
+    query = ::URI.decode(params["query"].to_s)
 
 # puts query
 # puts @@file.inspect
